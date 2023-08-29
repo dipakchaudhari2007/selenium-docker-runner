@@ -3,12 +3,21 @@ services:
  hub:
   image: selenium/hub:4.11.0
   container_name: seleniumHub
-  ports: 
-   - "4444:4444"
    
  chrome:
   image: selenium/node-chrome:4.11.0
-  shm_size: "3gb"
+  shm_size: "1gb"
+  environment:
+   - HUB_HOST=hub
+   - SE_EVENT_BUS_HOST=seleniumHub
+   - SE_EVENT_BUS_PUBLISH_PORT=4442
+   - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  depends_on:
+   - hub
+   
+ firefox:
+  image: selenium/node-firefox:4.11.0
+  shm_size: "1gb"
   environment:
    - HUB_HOST=hub
    - SE_EVENT_BUS_HOST=seleniumHub
@@ -21,6 +30,7 @@ services:
    image: dipakchaudhari/selenium-docker
    depends_on:
      - chrome
+     - firefox
    environment:
      - HUB_HOST=hub
      - BROWSER=chrome
@@ -32,9 +42,10 @@ services:
    image: dipakchaudhari/selenium-docker
    depends_on:
      - chrome
+     - firefox
    environment:
      - HUB_HOST=hub
-     - BROWSER=chrome
+     - BROWSER=firefox
      - SE_EVENT_BUS_HOST=seleniumHub
      - MODULE=search-module.xml
    volumes:
