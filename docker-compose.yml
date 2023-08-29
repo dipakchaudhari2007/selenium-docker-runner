@@ -1,0 +1,54 @@
+version: "4"
+services:
+ hub:
+  image: selenium/hub:4.11.0
+  container_name: seleniumHub
+  ports: 
+   - "4444:4444"
+   
+ chrome:
+  image: selenium/node-chrome:4.11.0
+  shm_size: "2gb"
+  environment:
+   - HUB_HOST=hub
+   - SE_EVENT_BUS_HOST=seleniumHub
+   - SE_EVENT_BUS_PUBLISH_PORT=4442
+   - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  depends_on:
+   - hub
+   
+ firefox:
+  image: selenium/node-firefox:4.11.0
+  shm_size: "1gb"
+  environment:
+   - HUB_HOST=hub
+   - SE_EVENT_BUS_HOST=seleniumHub
+   - SE_EVENT_BUS_PUBLISH_PORT=4442
+   - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  depends_on:
+   - hub
+ book-flight-module:
+   image: dipakchaudhari/selenium-docker
+   depends_on:
+     - chrome
+     - firefox
+   environment:
+     - HUB_HOST=hub
+     - BROWSER=firefox
+     - SE_EVENT_BUS_HOST=seleniumHub
+     - MODULE=book-flight-module.xml
+   volumes:
+     - ./book-flight-result:/usr/share/poc/test-output
+ search-module:
+   image: dipakchaudhari/selenium-docker
+   depends_on:
+     - chrome
+     - firefox
+   environment:
+     - HUB_HOST=hub
+     - BROWSER=chrome
+     - SE_EVENT_BUS_HOST=seleniumHub
+     - MODULE=search-module.xml
+   volumes:
+     - ./search-result:/usr/share/poc/test-output
+     
