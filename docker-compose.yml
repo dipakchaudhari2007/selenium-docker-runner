@@ -6,7 +6,7 @@ services:
    
  chrome:
   image: selenium/node-chrome:4.11.0
-  shm_size: "1gb"
+  shm_size: "2gb"
   environment:
    - HUB_HOST=hub
    - SE_EVENT_BUS_HOST=seleniumHub
@@ -17,7 +17,7 @@ services:
    
  firefox:
   image: selenium/node-firefox:4.11.0
-  shm_size: "1gb"
+  shm_size: "2gb"
   environment:
    - HUB_HOST=hub
    - SE_EVENT_BUS_HOST=seleniumHub
